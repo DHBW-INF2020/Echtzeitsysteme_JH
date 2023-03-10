@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
+    <title>CSV to Ablaufdiagramm</title>
+</head>
+
+<body class="bg-light">
+
+    <!-- Header Information -->
+    <header>
+        <div class="container text-center mt-3">
+            <h1>CSV to Ablaufdiagramm</h1>
+            <p class="lead">Prüfungsleistung Echtzeitsysteme TINF20IN</p>
+            <p><strong>Matrikelnummer:</strong> 4793868</p>
+        </div>
+    </header>
+
+    <hr class="container">
+
+    <main>
+        <!-- Menu -->
+        <div class="container mb-3 w-50">
+            <label for="file-upload" class="form-text">CSV Datei hochladen</label>
+            <input class="form-control" id="file-upload" type="file" accept=".csv" onchange="uploadFile()">
+        </div>
+
+        <div class="container row mx-auto">
+            <div class="d-flex col flex-column  text-center">
+                <button class="btn btn-success" id="btn-import" onclick="importCSV()" disabled>
+                    Import CSV
+                </button>
+                <label for="btn-import" id="label-import">No File imported</label>
+            </div>
+
+            <div class="d-flex col flex-column text-center">
+                <button class="btn btn-primary" id="btn-generate" onclick="generateDiagram()" disabled>
+                    Generate
+                </button>
+                <label for="btn-generate" id="label-generate">Generate Diagramm</label>
+            </div>
+
+            <div class="d-flex col flex-column text-center">
+                <button class="btn btn-warning" id="btn-step" onclick="nextStep()" disabled>
+                    Next step
+                </button>
+                <label for="btn-step" id="label-step">1 Takt durchführen</label>
+            </div>
+
+        </div>
+
+        <hr class="container">
+
+        <div class="container text-center">
+            <p>Types: 1 Task; 2 Aktivitäten; 3 Semaphoren; 4 Mutex; 5 Verbindung</p>
+        </div>
+
+        <div class="container bg-white p-3 rounded border shadow" id="canvas">
+            <!-- The DIV for a Diagram needs an explicit size or else we will not see anything.
+            In this case we also add a background color so we can see that area. -->
+            <div class="w-100 rounded border border-dark shadow" id="myDiagramDiv" style="aspect-ratio: 1.5; background-color: #DAE4E4;"></div>
+
+            <!-- List CSV file data -->
+            <table class="table table-striped table-bordered" id="tblcsvdata">
+                <thead>
+                    <tr id="headrow">
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+
+            </table>
+        </div>
+    </main>
+
+</body>
+
+<script src="index.js"></script>
+
+</html>
