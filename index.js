@@ -23,6 +23,7 @@ function generateDiagram(array) {
     console.log("generate diagram")
     var $ = go.GraphObject.make;
     var myDiagram = $(go.Diagram, "myDiagramDiv");
+    myDiagram.isReadOnly = true
 
     myDiagram.nodeTemplate =
         new go.Node("Auto")  // the Shape will automatically surround the TextBlock
@@ -41,8 +42,8 @@ function generateDiagram(array) {
 
     var con = [
         { from: "1", to: "2" },
-        { from: "1", to: "3"}
-        ];
+        { from: "1", to: "3" }
+    ];
 
     myDiagram.model = new go.GraphLinksModel(arr, con)
 }
@@ -101,6 +102,12 @@ function showFile(result) {
 
         // Split by comma (,) to get column Array
         rowColData = rowData[row].split(',');
+
+        // if type == 1 -> Task
+        if(rowColData[2] = 1) {
+            var task = new Task(rowColData[0], rowColData[1],)
+        }
+        
 
         ids.push(rowColData[0])
 
