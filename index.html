@@ -12,6 +12,7 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
+    <script src="https://gojs.net/latest/extensions/Figures.js"></script>
     <title>CSV to Ablaufdiagramm</title>
 </head>
 
@@ -44,7 +45,7 @@
             </div>
 
             <div class="d-flex col flex-column text-center">
-                <button class="btn btn-primary" id="btn-generate" onclick="generateDiagram(Activities, Semaphores)" disabled>
+                <button class="btn btn-primary" id="btn-generate" onclick="onClickGenerateDiagram()" disabled>
                     Generate
                 </button>
                 <label for="btn-generate" id="label-generate">Generate Diagramm</label>
@@ -62,7 +63,7 @@
         <hr class="container">
 
         <div class="container text-center">
-            <p>Types: 1 Task; 2 Aktivitäten; 3 Semaphoren; 4 Mutex; 5 Verbindung</p>
+            <p>Types: 1 Tasks; 2 Aktivitäten; 3 Semaphoren; 4 Mutexes</p>
         </div>
 
         <div class="container bg-white p-3 rounded border shadow" id="canvas">
@@ -88,5 +89,6 @@
 
 <script src="index.js"></script>
 <script src="classes.js"></script>
+<script src="diagram.js"></script>
 
 </html>

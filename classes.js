@@ -21,10 +21,10 @@ class Activity {
 }
 
 class Semaphore {
-    constructor(id, name, initvalue, state, fromActivity, toActivity) {
+    constructor(id, name, initValue, state, fromActivity, toActivity) {
         this.id = id
         this.name = name
-        this.initvalue = initvalue
+        this.initValue = initValue
         this.state = state
         this.fromActivity = fromActivity
         this.toActivity = toActivity
@@ -35,6 +35,6 @@ class Mutex {
     constructor(id, name, activities) {
         this.id = id
         this.name = name
-        this.activities = activities
+        this.activities = activities = []
     }
 }

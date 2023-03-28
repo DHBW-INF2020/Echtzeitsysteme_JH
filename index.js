@@ -1,3 +1,4 @@
+const SEPARATOR = ";"
 
 var BUTTON_IMPORT = document.getElementById("btn-import")
 var BUTTON_GENERATE = document.getElementById("btn-generate")
@@ -10,9 +11,11 @@ var csvFile
 let Tasks = []
 let Activities = []
 let Semaphores = []
+let Mutexs = []
+
 
 function Init() {
-
+    console.log("INIT");
 }
 
 function importCSV() {
@@ -21,40 +24,65 @@ function importCSV() {
     document.getElementById("label-import").innerHTML = "<strong>" + csvFile.name + "</strong>" + " imported"
     if (csvFile.size > 0) {
         BUTTON_GENERATE.disabled = false
-        read(cb_read)
+        read(cb_read, csvFile)
     }
 }
 
-function generateDiagram(elements, connections) {
+
+
+function onClickGenerateDiagram() {
+    generateDiagram(Activities, Semaphores, Mutexs);
+}
+
+function generateDiagram(elements, connections, mutexs) {
     console.log("generate diagram")
-    var $ = go.GraphObject.make;
+    console.log(elements);
+    console.log(connections);
+    console.log(mutexs);
+    //var $ = go.GraphObject.make;
     var myDiagram = $(go.Diagram, "myDiagramDiv");
     myDiagram.isReadOnly = true
 
-    myDiagram.nodeTemplate =
-        new go.Node("Auto")  // the Shape will automatically surround the TextBlock
-            // add a Shape and a TextBlock to this "Auto" Panel
-            .add(new go.Shape("RoundedRectangle",
-                { strokeWidth: 1, fill: "white" })  // 1 border; default fill is white
-                .bind("fill", "color"))  // Shape.fill is bound to Node.data.color
-            .add(new go.Panel("Table", { defaultAlignment: go.Spot.Left })
-                .add(new go.TextBlock({ text: "Name: ", row: 0, column: 0 }))
-                .add(new go.TextBlock({ margin: 8, stroke: "#333", row: 0, column: 1 })  // some room around the text
-                    .bind("text", "name"))
-                .add(new go.TextBlock({ text: "Id: ", row: 1, column: 0 }))
-                .add(new go.TextBlock({ margin: 8, stroke: "#333", row: 1, column: 1 })  // some room around the text
-                    .bind("text", "key")));
+
+
+    const nodeTemplmap = new go.Map(); // In TypeScript you could write: new go.Map<string, go.Node>();
+    // for each of the node categories, specify which template to use
+    nodeTemplmap.add("activity", activityTemplate);
+    nodeTemplmap.add("mutex", mutexTemplate);
+
+    myDiagram.nodeTemplateMap = nodeTemplmap
+
+    const linkTemplmap = new go.Map()
+    linkTemplmap.add("arrow", arrowTemplate)
+    linkTemplmap.add("noarrow", noarrowTemplate)
+
+    myDiagram.linkTemplateMap = linkTemplmap
 
     var arr = [];
+    let con = [];
+
+
     elements.forEach(element => {
         console.log(element);
-        arr.push({ key: element.id, name: element.name })
+        arr.push({ key: element.id, name: element.name, category: "activity"})
     });
 
-    let con = []
+    mutexs.forEach(mutex => {
+        console.log("M: ");
+        console.log(mutex);
+        arr.push({ key: mutex.id, name: mutex.name, color: "red", category: "mutex" })
+        mutex.activities.forEach(activity => {
+            con.push({ from: mutex.id, to: activity.id, category: "noarrow" })
+        });
+    });
 
-    connections.forEach((sempahore) => {
-        con.push({ from: sempahore.fromActivity, to: sempahore.toActivity })
+
+
+    connections.forEach((semaphore) => {
+        if (semaphore.initValue != "m" && semaphore.initValue != "m\r") {
+            con.push({ from: semaphore.fromActivity, to: semaphore.toActivity, category: "arrow" })
+            console.log("CON: " + semaphore.initValue);
+        }
     })
     console.log("[CONNECTIONS:]")
     con.forEach((connection) => {
@@ -75,8 +103,14 @@ function uploadFile() {
     csvFile = INPUT_FILE.files[0]
 }
 
-function read(callback) {
-    const file = csvFile
+
+/**
+ * Reads/imports the given file
+ * the file is available via the callback function
+ * @param callback The callback function
+ * @param file The file to read/import
+ */
+function read(callback, file) {
     const reader = new FileReader();
 
     reader.onload = () => {
@@ -86,13 +120,18 @@ function read(callback) {
     reader.readAsText(file);
 }
 
-function cb_read(csvArray) {
+/**
+ * Callback of the read function
+ * @param result The imported file
+ */
+function cb_read(result) {
+    console.log("Callback");
 
-    fillTable(csvArray)
+    fillTable(result)
 
-    console.log(csvArray);
-    createObjects(csvArray)
-    //generateDiagram(Activities, Semaphores)
+    console.log(result);
+    createObjects(result)
+    generateDiagram(Activities, Semaphores, Mutexs)
 }
 
 function createObjects(csvArray) {
@@ -106,7 +145,7 @@ function createObjects(csvArray) {
     // Add Mutexes?
 
     rows.forEach((element) => {
-        let rowCol = element.split(",")
+        let rowCol = element.split(SEPARATOR)
         let type = rowCol[1], id = rowCol[0], name = rowCol[2]
         if (type == 3) {
             Semaphores.push(new Semaphore(id, name, rowCol[7], null, rowCol[5], rowCol[6]))
@@ -114,7 +153,7 @@ function createObjects(csvArray) {
     })
 
     rows.forEach((element) => {
-        let rowCol = element.split(",")
+        let rowCol = element.split(SEPARATOR)
         let type = rowCol[1], id = rowCol[0], name = rowCol[2]
 
         // Activities
@@ -133,7 +172,7 @@ function createObjects(csvArray) {
     })
 
     rows.forEach((element) => {
-        let rowCol = element.split(",")
+        let rowCol = element.split(SEPARATOR)
         let type = rowCol[1], id = rowCol[0], name = rowCol[2]
         // Tasks
         if (type == 1) {
@@ -145,6 +184,23 @@ function createObjects(csvArray) {
             })
             Tasks.push(task)
             console.log("[TASKS] added: " + name);
+        }
+    })
+
+    rows.forEach((element) => {
+        let rowCol = element.split(SEPARATOR)
+        let type = rowCol[1], id = rowCol[0], name = rowCol[2]
+        // Mutex
+        if (type == 4) {
+            var mutex = new Mutex(id, name)
+            Activities.forEach((activity) => {
+                if (activity.semaphoresFrom.some(e => e.fromActivity == id) || activity.semaphoresTo.some(e => e.toActivity == id)) {
+                    mutex.activities.push(activity)
+                    console.log("MA: pushed " + activity.name);
+                }
+            })
+            Mutexs.push(mutex)
+            console.log("[MUTEX] added: " + name);
         }
     })
 
@@ -177,7 +233,7 @@ function fillTable(csvArray) {
     var tbodyEl = document.getElementById('tblcsvdata').getElementsByTagName('tbody')[0];
 
 
-    var rowColData = rowData[0].split(',');
+    var rowColData = rowData[0].split(SEPARATOR);
     console.log("LE: " + rowColData.length);
 
     var headRow = ""
@@ -201,7 +257,7 @@ function fillTable(csvArray) {
         var newRow = tbodyEl.insertRow();
 
         // Split by comma (,) to get column Array
-        rowColData = rowData[row].split(',');
+        rowColData = rowData[row].split(SEPARATOR);
 
         // if type == 1 -> Task
         if (rowColData[1] = 1) {
