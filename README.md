@@ -2,8 +2,10 @@
 Repository für die Abgabe im Modul Echtzeitsysteme
 
 ## Anleitung
-Zunächst muss eine csv-Datei in der Formatierung der "testData.csv"-Datei hochgeladen und mit dem Button "Import CSV" importiert werden.  
-Danach kann
+- Zunächst muss eine csv-Datei in der Formatierung der "testData.csv"-Datei hochgeladen und mit dem Button "Import CSV" importiert werden.
+- Danach kann über den "Generate"-Button das Diagramm, im grauen Feld im unteren Teil der Seite, generiert werden.
+- Mit dem "Trigger"-Button kann jeweils ein Takt simuliert werden. Aktuell laufende Aktivitäten sind rot umrandet.
+
 
 ## Aufgabe
 Ein Software entwickeln, die eine Excel-/CSV-Tabelle einlesen und in einem Ablaufdiagramm visualisieren kann.  
