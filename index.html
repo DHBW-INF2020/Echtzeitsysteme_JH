@@ -53,7 +53,7 @@
 
             <div class="d-flex col flex-column text-center">
                 <button class="btn btn-warning" id="btn-step" onclick="nextStep()" disabled>
-                    Next step
+                    Trigger
                 </button>
                 <label for="btn-step" id="label-step">1 Takt durchführen</label>
             </div>
@@ -64,6 +64,7 @@
 
         <div class="container text-center">
             <p>Types: 1 Tasks; 2 Aktivitäten; 3 Semaphoren; 4 Mutexes</p>
+            <p>Aktueller Takt: <span id="aktueller-takt">0</span></p>
         </div>
 
         <div class="container bg-white p-3 rounded border shadow" id="canvas">

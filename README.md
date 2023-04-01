@@ -1,6 +1,10 @@
 # Echtzeitsysteme_JH
 Repository für die Abgabe im Modul Echtzeitsysteme
 
+## Anleitung
+Zunächst muss eine csv-Datei in der Formatierung der "testData.csv"-Datei hochgeladen und mit dem Button "Import CSV" importiert werden.  
+Danach kann
+
 ## Aufgabe
 Ein Software entwickeln, die eine Excel-/CSV-Tabelle einlesen und in einem Ablaufdiagramm visualisieren kann.  
 **Muss Folgendes beinhalten:**
